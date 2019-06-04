@@ -18,7 +18,29 @@ If your default python installation is python3 then you can replace `python3` wi
 
 ### AWS Credentials
 The tool assumes that a working AWS cli / profile was already set. If in doubt - please consult boto guide : https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html <br/>
-Your AWS user / role should have some readonly permissions to perfrom a few EC2 describe operations, CloudWatchLogs Insight queries, and to read relevant S3 buckets. TODO: provide a full list of IAM permissions or a minimal IAM policy file.
+Your AWS user / role should have some readonly permissions to perfrom a few EC2 describe operations, CloudWatchLogs Insight queries, and to read relevant S3 buckets. This is the list of IAM permissions that is required. It can be added to the relevant user / role as an independant policy.
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "storagecalculator",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeVpcs",
+                "ec2:DescribeRegions",
+                "ec2:DescribeFlowLogs",
+                "s3:ListBucket",
+                "s3:GetObject",
+                "logs:StartQuery",
+                "logs:GetQueryResults"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
 
 
 ## Using the tool
