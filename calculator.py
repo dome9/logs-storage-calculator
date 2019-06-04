@@ -127,15 +127,16 @@ def query_vpcfl_daily_size_s3(bucket):
     for acc in accounts:
         regions = get_folders_in_s3(bucket,acc + 'vpcflowlogs/')
         for region in regions:
-            work_list.append('%s%s/%s%s/%s/' % (region,d.year,'0' if d.month<=9 else '' , d.month,d.day) )
+            work_list.append('%s%s/%s/%s/' % (region,d.year,"{:02d}".format(d.month),"{:02d}".format(d.day)) )
     
     total_bytes = 0
-    print('Analysing S3 bucket %s, discovered %i folders' % (bucket, len(work_list)), end='', flush=True)
+    print('Analysing S3 bucket %s, discovered %i relevant subfolders' % (bucket, len(work_list)))
     for item in work_list:
-        total_bytes += get_s3_folder_size(bucket,item)
-        print('.', end='', flush=True)
+        bucket_size = get_s3_folder_size(bucket,item)
+        total_bytes += bucket_size
+        print(' - %s/%s \tsize:%s ' % (bucket,item,bucket_size))
 
-    print(' Total %i bytes (compressed)' % total_bytes)
+    print('Total %i bytes (compressed)' % total_bytes)
     return total_bytes
 
 def get_s3_folder_size(bucket, prefix):
